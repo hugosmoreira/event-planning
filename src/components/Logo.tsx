@@ -4,8 +4,8 @@ export function Logo() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      width="500"
-      height="500"
+      width="100"
+      height="50"
       version="1"
       viewBox="0 0 375 375"
     >

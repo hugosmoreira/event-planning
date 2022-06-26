@@ -4,7 +4,7 @@ type Props = {}
 
 const Video = (props: Props) => {
   return (
-    <div>Video</div>
+    <div className='flex-1'>Video</div>
   )
 }
 
