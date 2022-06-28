@@ -6,6 +6,9 @@ import Lesson from './components/Lesson';
 import Sidebar from './components/Sidebar';
 import Video from './components/Video';
 import Event from './pages/Event';
+import Router from './components/Router';
+import { ApolloProvider } from '@apollo/client';
+import { BrowserRouter } from 'react-router-dom';
 
 
 
@@ -31,9 +34,11 @@ function App() {
  
 
   return (
-    <div>
-      <Event />
-    </div>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </ApolloProvider>
   )
 }
 

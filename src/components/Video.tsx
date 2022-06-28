@@ -1,19 +1,60 @@
 import { CaretRight, DiscordLogo, FileArrowDown, Lightning } from 'phosphor-react'
 import { DefaultUi, Player, Youtube  } from '@vime/react'
-import React from 'react'
+import { gql, useQuery } from '@apollo/client'
 import '@vime/core/themes/default.css'
 
+const GET_LESSON_BY_SLUG_QUERY = gql`
+  query GetLessonBySlug($slug: String) {
+  lesson(where: {slug: $slug}) {
+    title
+    videoId
+    description
+    teacher {
+      name
+      bio
+      avatarURL
+    }
+  }
+}
+
+`
+interface GetLessonBySlugQueryResponse {
+  lesson: {
+    title: string
+    videoId: string
+    description: string
+    teacher: {
+      bio: string
+      avatarURL: string
+      name: string
+    }
+  }
+}
 
 
-type Props = {}
+interface VideoProps {
+  lessonSlug: string;
+}
 
-const Video = (props: Props) => {
+const Video = (props: VideoProps) => {
+
+  const { data } = useQuery<GetLessonBySlugQueryResponse>(GET_LESSON_BY_SLUG_QUERY, {
+    variables: {
+      slug: props.lessonSlug
+    }
+  })
+
+  if (!data) {
+    return <div className='flex-1'>Loading...</div>
+  }
+
+
   return (
     <div className='flex-1'>
       <div className='bg-black flex justify-center'>
         <div className='h-full w-full max-w-[1100px] max-h-[60vh] aspect-video'>
           <Player>
-            <Youtube videoId='NQp5ZAKbKvk' />
+            <Youtube videoId={data.lesson.videoId} key={data.lesson.videoId} />
             <DefaultUi />
           </Player>
         </div>
@@ -24,23 +65,23 @@ const Video = (props: Props) => {
         <div className='flex items-start gap-16'>
           <div className='flex-1'>
             <h1 className='text-2xl font-bold'>
-              Aula 01 - Abertura da Plataforma
+            {data.lesson.title} 
             </h1>
             <p className='mt-4 text-gray-200 leading-relaxed'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, ut.
+            {data.lesson.description} 
             </p>
 
             <div className='flex items-center gap-4 mt-6'>
               <img 
               className='h-16 w-16 rounded-full boder-2 boder-blue-500'
-              src="https://github.com/diego3g.png" 
+              src={data.lesson.teacher.avatarURL} 
               alt="" 
               
               />
 
               <div className='leading-relaxed'>
-                <strong className='font-bold text-2xl block'>Diego Fernando</strong>
-                <span className='text-gray-200 text-sm block'>CTO at my Balls</span>
+                <strong className='font-bold text-2xl block'>{data.lesson.teacher.name} </strong>
+                <span className='text-gray-200 text-sm block'>{data.lesson.teacher.bio} </span>
               </div>
             </div>
           </div>
